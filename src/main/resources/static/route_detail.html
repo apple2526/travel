@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>路线详情</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/route-detail.css">
+</head>
+<body>
+<div id="header"></div>
+<div class="wrap">
+    <div class="bread_box">
+        <a href="/">首页</a>
+        <span> &gt;</span>
+        <a href="#" id="categoryHtml">国内游</a><span> &gt;</span>
+        <a href="#" id="headerRname"></a>
+    </div>
+    <div class="prosum_box">
+        <dl class="prosum_left">
+            <dt id="bigImg"></dt>
+            <dd id="littleImg"></dd>
+        </dl>
+        <div class="prosum_right">
+            <p class="pros_title" id="routeNameP"></p>
+            <p class="hot" id="routeIntroduceP"></p>
+            <div class="pros_other">
+                <p id="sellerNameP"></p>
+                <p id="sellerPhoneP"></p>
+                <p id="sellerAddrP"></p>
+            </div>
+            <div class="pros_price">
+                <p class="price"><strong id="routePriceS">¥2699.00</strong><span>起</span></p>
+                <p class="collect">
+                    <a class="btn" id="favorite_ok" onclick="addFavorite()" href="javascript:"><i
+                            class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
+                    <a class="btn already" disabled="disabled" id="favorite_no"><i
+                            class="glyphicon glyphicon-heart-empty"></i>点击收藏</a>
+                    <span id="routeCountS"></span>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="you_need_konw">
+        <span>旅游须知</span>
+        <div class="notice">
+            <p>1、旅行社已投保旅行社责任险。建议游客购买旅游意外保险 <br>
+            <p>
+                2、旅游者参加打猎、潜水、海边游泳、漂流、滑水、滑雪、滑草、蹦极、跳伞、滑翔、乘热气球、骑马、赛车、攀岩、水疗、水上飞机等属于高风险性游乐项目的，敬请旅游者务必在参加前充分了解项目的安全须知并确保身体状况能适应此类活动；如旅游者不具备较好的身体条件及技能，可能会造成身体伤害。</p>
+            <p>
+                3、参加出海活动时，请务必穿着救生设备。参加水上活动应注意自己的身体状况，有心脏病、冠心病、高血压、感冒、发烧和饮酒及餐后不可以参加水上活动及潜水。在海里活动时，严禁触摸海洋中各种鱼类，水母，海胆，珊瑚等海洋生物，避免被其蛰伤。老人和小孩必须有成年人陪同才能参加合适的水上活动。在海边游玩时，注意保管好随身携带的贵重物品。</p>
+            <p>4、根据中国海关总署的规定，旅客在境外购买的物品，在进入中国海关时可能需要征收关税。详细内容见《中华人民共和国海关总署公告2010年第54号文件》。</p>
+            <p>5、建议出发时行李托运，贵重物品、常用物品、常用药品、御寒衣物等请随身携带，尽量不要托运。行李延误属于不可抗力因素，我司将全力协助客人跟进后续工作，但我司对此不承担任何责任。</p>
+            <p>1、旅行社已投保旅行社责任险。建议游客购买旅游意外保险 <br>
+            <p>
+                2、旅游者参加打猎、潜水、海边游泳、漂流、滑水、滑雪、滑草、蹦极、跳伞、滑翔、乘热气球、骑马、赛车、攀岩、水疗、水上飞机等属于高风险性游乐项目的，敬请旅游者务必在参加前充分了解项目的安全须知并确保身体状况能适应此类活动；如旅游者不具备较好的身体条件及技能，可能会造成身体伤害。</p>
+            <p>
+                3、参加出海活动时，请务必穿着救生设备。参加水上活动应注意自己的身体状况，有心脏病、冠心病、高血压、感冒、发烧和饮酒及餐后不可以参加水上活动及潜水。在海里活动时，严禁触摸海洋中各种鱼类，水母，海胆，珊瑚等海洋生物，避免被其蛰伤。老人和小孩必须有成年人陪同才能参加合适的水上活动。在海边游玩时，注意保管好随身携带的贵重物品。</p>
+            <p>4、根据中国海关总署的规定，旅客在境外购买的物品，在进入中国海关时可能需要征收关税。详细内容见《中华人民共和国海关总署公告2010年第54号文件》。</p>
+            <p>5、建议出发时行李托运，贵重物品、常用物品、常用药品、御寒衣物等请随身携带，尽量不要托运。行李延误属于不可抗力因素，我司将全力协助客人跟进后续工作，但我司对此不承担任何责任。</p>
+        </div>
+    </div>
+</div>
+<div id="footer"></div>
+<script src="js/jquery-3.3.1.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/include.js"></script>
+<script type="text/javascript" src="./js/getParameter.js"></script>
+<script>
+    $(function () {
+        var rid = getParameter("rid");
+        $.get("/queryRouteDetail", {rid: rid}, function (result) {
+            var bigImgHtml = '<img alt="" class="big_img" src=' + result.rimage + '>';
+            $("#bigImg").html(bigImgHtml);
+            var littleImgHtml = '<a class="up_img up_img_disable"></a>';
+            var imgList = result.routeImgList;
+            $(imgList).each(function (index, element) {
+                if (index <= 3) {
+                    littleImgHtml += ' <a title="" class="little_img cur_img" data-bigpic=' + element.bigPic + '>\n' +
+                        '                        <img alt="" src= ' + element.smallPic + '>\n' +
+                        '                    </a>';
+                } else {
+                    littleImgHtml += ' <a title="" class="little_img cur_img" data-bigpic=' + element.bigPic + ' style="display:none">\n' +
+                        '                        <img alt="" src=' + element.smallPic + '>\n' +
+                        '                    </a>';
+                }
+            });
+            littleImgHtml += '<a class="down_img down_img_disable" style="margin-bottom: 0;"></a>';
+            $("#littleImg").html(littleImgHtml);
+            imgGo();
+            $("#routeNameP").html(result.rname);
+            $("#routeIntroduceP").html(result.routeIntroduce);
+            $("#sellerNameP").html("商家名称：" + result.sname);
+            $("#sellerPhoneP").html("联系电话" + result.consphone);
+            $("#sellerAddrP").html("商家地址" + result.address);
+            $("#routeCountS").html("已收藏" + result.count + "次");
+            $("#routePriceS").html("￥" + result.price);
+            $("#categoryHtml").html(result.cname);
+            $("#headerRname").html(result.rname);
+        }, "json");
+    });
+
+    function imgGo() {
+        $('.little_img').on('mousemove', function () {
+            $('.little_img').removeClass('cur_img');
+            var big_pic = $(this).data('bigpic');
+            $('.big_img').attr('src', big_pic);
+            $(this).addClass('cur_img');
+        });
+        var picindex = 0;
+        var nextindex = 4;
+        $('.down_img').on('click', function () {
+            var num = $('.little_img').length;
+            if ((nextindex + 1) <= num) {
+                $('.little_img:eq(' + picindex + ')').hide();
+                $('.little_img:eq(' + nextindex + ')').show();
+                picindex = picindex + 1;
+                nextindex = nextindex + 1;
+            }
+        });
+        $('.up_img').on('click', function () {
+            var num = $('.little_img').length;
+            if (picindex > 0) {
+                $('.little_img:eq(' + (nextindex - 1) + ')').hide();
+                $('.little_img:eq(' + (picindex - 1) + ')').show();
+                picindex = picindex - 1;
+                nextindex = nextindex - 1;
+            }
+        });
+    }
+
+    $(function () {
+        let rid = getParameter("rid");
+        $.get("/isFavorite", {rid: rid}, function (result) {
+            if (result.isFavorite) {
+                $("#favorite_ok").hide();
+            } else {
+                $("#favorite_no").hide();
+            }
+        }, "json");
+    });
+
+    function addFavorite() {
+        let rid = getParameter("rid");
+        $.get("/addFavorite", {rid: rid}, function (result) {
+            if (result.addFavoriteFlag) {
+                $("#routeCount").html("已收藏" + result.count + "次");
+                $("#favorite_ok").attr("disabled", "disabled");
+                $("#favorite_ok").html("已收藏");
+                $("#favorite_ok").removeAttr("onclick");
+            } else {
+                location.href = "login.html";
+            }
+        }, "json");
+    }
+</script>
+</body>
+</html>

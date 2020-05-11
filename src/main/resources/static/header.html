@@ -1,0 +1,83 @@
+<header id="header">
+    <div class="top_banner">
+        <img src="images/top_banner.jpg" alt="">
+    </div>
+    <div class="shortcut">
+        <div class="login_out">
+            <a href="login.html">登录</a>
+            <a href="register.html">注册</a>
+        </div>
+        <div class="login">
+            <span id="userNameSpan">欢迎回来，admin</span>
+            <a href="myfavorite.html" class="collection">我的收藏</a>
+            <a href="/loginOut">退出</a>
+        </div>
+    </div>
+    <div class="header_wrap">
+        <div class="topbar">
+            <div class="logo">
+                <a href="/"><img src="images/logo.jpg" alt=""></a>
+            </div>
+            <div class="search">
+                <label>
+                    <input name="" id="rname" type="text" placeholder="请输入路线名称" class="search_input" autocomplete="off">
+                    <a href="javascript:" onclick="searchByRname()" class="search-button">搜索</a>
+                </label>
+                <a href="javascript:" class="search-button">搜索</a>
+            </div>
+            <div class="hottel">
+                <div class="hot_pic">
+                    <img src="images/hot_tel.jpg" alt="">
+                </div>
+                <div class="hot_tel">
+                    <p class="hot_time">客服热线(9:00-6:00)</p>
+                    <p class="hot_num">400-618-9090</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="navitem">
+    <ul class="nav" id="categoryHtml">
+    </ul>
+</div>
+<script src="./js/getParameter.js"></script>
+<script>
+    $(function () {
+        $.get("/getLoginUserData", function (result) {
+            // console.log(result);
+            if (result.loginFlag) {
+                $(".login_out").hide();
+                $("#userNameSpan").html(result.loginUser.name + "&nbsp;&nbsp;欢迎回来");
+                // console.log(result.loginUser.name);
+            } else {
+                $(".login").hide();
+            }
+        }, "json");
+    });
+    $(function () {
+        $.get("/queryAllCategory", function (result) {
+            let categoryList = `<li class='nav‐active'><a href='index.html'>首页</a></li>`;
+            if (result) {
+                $(result).each(function (index, element) {
+                    categoryList += `<li><a href='route_list.html?cid=${element.cid}''>${element.cname}</a></li>`;
+                });
+            }
+            categoryList += `<li><a href='favoriterank.html'>收藏排行榜</a></li>`;
+            $("#categoryHtml").html(categoryList);
+        }, "json");
+    });
+
+    function searchByRname() {
+        let rname = $("#rname").val();
+        location.href = "route_list.html?rname=" + rname;
+    }
+
+    $(function () {
+        let rname = getParameter("rname");
+        if (rname) {
+            rname = decodeURI(rname);
+            $("#rname").val(rname);
+        }
+    });
+</script>

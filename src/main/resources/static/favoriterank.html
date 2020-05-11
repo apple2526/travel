@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>收藏排行榜</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/ranking-list.css">
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<div class="contant">
+    <div class="shaixuan">
+        <span>线路名称</span>
+        <label>
+            <input type="text" id="searchName">
+        </label>
+        <span>金额</span>
+        <label>
+            <input type="text" id="startPrice">
+        </label>~<label>
+        <input type="text" id="endPrice">
+    </label>
+        <button onclick="getFavoriteRangeData(1,8)">搜索</button>
+    </div>
+    <div class="list clearfix">
+        <ul id="favoriteRangeList">
+        </ul>
+    </div>
+    <div class="pageNum">
+        <ul id="favoriteRangePageList">
+        </ul>
+    </div>
+</div>
+<div id="footer"></div>
+<script type="text/javascript" src="js/include.js"></script>
+<script>
+    $(function () {
+        getFavoriteRangeData(1, 8);
+    });
+
+    function getFavoriteRangeData(pageNum, pageSize) {
+        let rname = $("#searchName").val();
+        let startPrice = $("#startPrice").val();
+        let endPrice = $("#endPrice").val();
+        $.get("/getFavoriteRangePageData", {
+            pageNum: pageNum,
+            pageSize: pageSize,
+            rname: rname,
+            startPrice: startPrice,
+            endPrice: endPrice
+        }, function (result) {
+            var routeListHtml = "";
+            if (result.data) {
+                let routeList = result.data;
+                let startCount = (pageNum - 1) * 8 + 1;
+                for (let i = 0; i < routeList.length; i++) {
+                    let numLine = "";
+                    if (startCount === 1) {
+                        numLine = '<span class="num one">' + (startCount++) + '</span>\n';
+                    } else if (startCount === 2) {
+                        numLine = '<span class="num two">' + (startCount++) + '</span>\n';
+                    } else {
+                        numLine = '<span class="num">' + (startCount++) + '</span>\n';
+                    }
+                    routeListHtml += ` <li>
+${numLine}<a href="route_detail.html?rid=${routeList[i].rid}"><img src=${routeList[i].rimage} alt=""></a>
+<h4><a href="route_detail.html?rid=${routeList[i].rid}">${routeList[i].rname}</a></h4>
+<p>
+<b class="price">&yen;<span>${routeList[i].price}</span>起</b>
+<span class="shouchang">已收藏${routeList[i].count}次</span>
+</p>
+</li>`
+                }
+            }
+            $("#favoriteRangeList").html(routeListHtml);
+            var pageLine = '<li><a href="javascript:;" onclick="getFavoriteRangeData(1)">首页</a></li>' +
+                '<li class="threeword"><a  onclick="getFavoriteRangeData(' + result.prePage + ')" href="javascript:;">上一页</a></li>';
+            let begin = pageNum - 5;
+            let end = pageNum + 4;
+            var totalPage = result.totalPage;
+            if (totalPage < 10) {
+                begin = 1;
+                end = totalPage;
+            } else {
+                if (begin < 0) {
+                    begin = 1;
+                    end = 10;
+                }
+                if (end > totalPage) {
+                    end = totalPage;
+                    begin = totalPage - 9;
+                }
+            }
+            for (let i = begin; i <= end; i++) {
+                if (i === pageNum) {
+                    pageLine += '<li class="curPage"><a href="javascript:;" onclick="getFavoriteRangeData(' + i + ')">' + i + '</a></li>';
+                } else {
+                    pageLine += '<li><a href="javascript:;" onclick="getFavoriteRangeData(' + i + ')">' + i + '</a></li>';
+                }
+            }
+            pageLine += '<li class="threeword"><a href="javascript:;" onclick="getFavoriteRangeData(' + result.nextPage + ')">下一页</a></li>\n' +
+                '<li class="threeword"><a href="javascript:;" onclick="getFavoriteRangeData(' + result.totalPage + ')">末页</a></li>';
+            $("#favoriteRangePageLine").html(pageLine);
+        }, "json")
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>黑马旅游-搜索</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" href="css/search.css">
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<div class="page_one">
+    <div class="contant">
+        <div class="crumbs">
+            <img src="images/search.png" alt="">
+            <p>黑马旅行><span>搜索结果</span></p>
+        </div>
+        <div class="xinxi clearfix">
+            <div class="left">
+                <div class="header">
+                    <span>商品信息</span>
+                    <span class="jg">价格</span>
+                </div>
+                <ul id="routePageList"></ul>
+                <div class="page_num_inf">
+                    <i></i> 共
+                    <span id="totalPageSpan"></span>页<span id="totalCountSpan"></span>条
+                </div>
+                <div class="pageNum">
+                    <ul>
+                        <li><a href="">首页</a></li>
+                        <li class="threeword"><a href="#">上一页</a></li>
+                        <li><a href="javascript:" onclick="getPageData(1,8)">1</a></li>
+                        <li><a href="javascript:" onclick="getPageData(2,8)">2</a></li>
+                        <li><a href="javascript:" onclick="getPageData(3,8)">3</a></li>
+                        <li><a href="javascript:" onclick="getPageData(4,8)">4</a></li>
+                        <li><a href="javascript:" onclick="getPageData(5,8)">5</a></li>
+                        <li><a href="javascript:" onclick="getPageData(6,8)">6</a></li>
+                        <li><a href="javascript:" onclick="getPageData(7,8)">7</a></li>
+                        <li><a href="javascript:" onclick="getPageData(8,8)">8</a></li>
+                        <li><a href="javascript:" onclick="getPageData(9,8)">9</a></li>
+                        <li><a href="javascript:" onclick="getPageData(10,8)">10</a></li>
+                        <li class="threeword"><a href="javascript:">下一页</a></li>
+                        <li class="threeword"><a href="javascript:">末页</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="right">
+                <div class="top">
+                    <div class="hot">HOT</div>
+                    <span>热门推荐</span>
+                </div>
+                <ul>
+                    <li>
+                        <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                        <div class="right">
+                            <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                        <div class="right">
+                            <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                        <div class="right">
+                            <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                        <div class="right">
+                            <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="left"><img src="images/04-search_09.jpg" alt=""></div>
+                        <div class="right">
+                            <p>清远新银盏温泉度假村酒店/自由行套...</p>
+                            <p>网付价<span>&yen;<span>899</span>起</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="footer"></div>
+<script type="text/javascript" src="./js/include.js"></script>
+<script type="text/javascript" src="./js/getParameter.js"></script>
+<script>
+    $(function getPageData(pageNum, pageSize) {
+        let cid = getParameter("cid");
+        let rname = getParameter("rname");
+        if (rname) {
+            rname = decodeURI(rname);
+        }
+        $.get("/routePageQuery", {pageSize: pageSize, pageNum: pageNum, cid: cid, rname: rname}, function (pageData) {
+            if (pageData) {
+                let routeList = pageData.data;
+                let routeHtml = "";
+                $(routeList).each(function (index, route) {
+                    routeHtml += `<li>
+                        <div class="img"><img src=${route.rimage}  alt=""></div>
+                        <div class="text1">
+                        <p>${route.rname}</p>
+                        <br/>
+                        <p>${route.routeIntroduce}</p>
+                        </div>
+                        <div class="price">
+                        <p class="price_num">
+                        <span>&yen;</span>
+                        <span>${route.price}</span>
+                        <span>起</span>
+                        </p>
+                        <p><a href="route_detail.html?rid=${route.rid}">查看详情</a></p>
+                        </div>
+                        </li>`;
+                });
+                $("#routePageList").html(routeHtml);
+                let totalCout = pageData.totalCount;
+                let totalPage = pageData.totalPage;
+                $("#totalCountSpan").html(totalCout);
+                $("#totalPageSpan").html(totalPage);
+                let begin;
+                let end;
+                if (totalPage < 10) {
+                    begin = 1;
+                    end = totalPage;
+                } else {
+                    begin = pageNum - 5;
+                    end = pageNum + 4;
+                    if (begin < 1) {
+                        begin = 1;
+                        end = 10;
+                    }
+                    if (end > totalPage) {
+                        end = totalPage;
+                        begin = totalPage - 9;
+                    }
+                }
+                let prePage = pageData.prePage;
+                let nextPage = pageData.nextPage;
+                let pageLineHtml = `<li><a href="javascript:;" onclick="getPageData(1,8)">首页</a></li>
+                                                 <li class="threeword"><a href="javascript:;" onclick="getPageData(${prePage},8)">上一页</a></li>`;
+                for (let i = 1; i <= totalPage; i++) {
+                    if (pageNum === i) {
+                        pageLineHtml += `<li class="curPage"><a href="javascript:;" onclick="getPageData(${i},8)">${i}</a></li>`;
+                    } else {
+                        pageLineHtml += `<li><a href="javascript:" onclick="getPageData(${i}',8)">${i}'</a></li>`;
+                    }
+                }
+                pageLineHtml += `<li class="threeword"><a href="javascript:;" onclick="getPageData(${nextPage},8)">下一页</a></li>
+                                            <li class="threeword"><a href="javascript:;"  onclick="getPageData(${totalPage},8)">末页</a></li>`;
+                $("#pageLine").html(pageLineHtml);
+            }
+        }, "json");
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>黑马旅游网-登录</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<section id="login_wrap">
+    <div class="fullscreen-bg" style="background: url(images/login_bg.png);height: 532px;">
+    </div>
+    <div class="login-box">
+        <div class="title">
+            <img src="images/login_logo.png" alt="">
+            <span>欢迎登录黑马旅游账户</span>
+        </div>
+        <div class="login_inner">
+            <div id="errorMsg" class="alert alert-danger"></div>
+            <form id="loginForm" action="" method="post" accept-charset="utf-8">
+                <input type="hidden" name="action" value="login"/>
+                <label>
+                    <input name="email" type="text" placeholder="请输入email" autocomplete="off">
+                </label>
+                <label>
+                    <input name="password" type="password" placeholder="请输入密码" autocomplete="off">
+                </label>
+                <div class="verify">
+                    <input name="check" type="text" placeholder="请输入验证码" autocomplete="off">
+                    <span><img width="104px" src="/checkCode" alt="" onclick="changeCheckCode(this)"></span>
+                    <script type="text/javascript">
+                        function changeCheckCode(img) {
+                            img.src="/checkCode?"+new Date().getTime();
+                        }
+                    </script>
+                </div>
+                <div class="submit_btn">
+                    <input type="submit" value="登录">
+                </div>
+            </form>
+            <div class="reg">没有账户？<a href="javascript:">立即注册</a></div>
+        </div>
+    </div>
+</section>
+<div id="footer"></div>
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript" src="js/include.js"></script>
+<script>
+    var emailCheckFlag = false;
+    $("input[name='email']").blur(function () {
+        var email = this.value;
+        $.get("/isEmailActive", {email: email}, function (result) {
+            if (!result.checkFlag) {
+                $("#errorMsg").html(result.resultInfo);
+                emailCheckFlag = false;
+            } else {
+                $("#errorMsg").html("");
+                emailCheckFlag = true;
+            }
+        }, "json");
+    });
+    $("#loginForm").submit(function () {
+        var formData = $("#loginForm").serialize();
+        $.post("/login", formData, function (result) {
+            if (result.loginFlag) {
+                location.href = "/index.html";
+            } else {
+                $("#errorMsg").html(result.errorMsg);
+            }
+        }, "json");
+        return false;
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>黑马旅游网-我的收藏</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/common.css">
+    <link rel="stylesheet" href="css/index.css">
+    <style>
+        .tab-content .row > div {
+            margin-top: 16px;
+        }
+
+        .tab-content {
+            margin-bottom: 36px;
+        }
+    </style>
+    <script src="js/jquery-3.3.1.js"></script>
+</head>
+<body>
+<div id="header"></div>
+<section id="content">
+    <section class="hemai_jx">
+        <div class="jx_top">
+            <div class="jx_tit">
+                <img src="images/icon_5.jpg" alt="">
+                <span>我的收藏</span>
+            </div>
+        </div>
+        <div class="jx_content">
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="home">
+                    <div class="row" id="myFavoriteList">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="pageNum">
+            <ul id="pageLine">
+            </ul>
+        </div>
+    </section>
+</section>
+<div id="footer"></div>
+<script type="text/javascript" src="js/include.js"></script>
+<script>
+    $(function () {
+        getPageData(1, 12);
+    });
+
+    function getPageData(pageNum, pageSize) {
+        $.get("/pageQueryMyFavorite", {
+            pageNum: pageNum,
+            pageSize: pageSize
+        }, function (result) {
+            if (result.loginFlag === false) {
+                location.href = "login.html";
+            } else {
+                var dataList = result.data;
+                var favoriteHtml = "";
+                $(dataList).each(function (index, favorite) {
+                    favoriteHtml += ' <div class="col-md-3">\n' +
+                        '                            <a href="jroute_detail.html">\n' +
+                        '                                <img  alt="" src=' + favorite.route.rimage + '>\n' +
+                        '                                <div class="has_border">\n' +
+                        '                                    <h3>' + favorite.route.rname + '</h3>\n' +
+                        '                                    <div class="price">网付价<em>￥</em><strong>' + favorite.route.price + '</strong><em>起</em></div>\n' +
+                        '                                </div>\n' +
+                        '                            </a>\n' +
+                        '                        </div>';
+                });
+                $("#myFavoriteList").html(favoriteHtml);
+                var totalPage = result.totalPage;
+                var prePage = result.prePage;
+                var nextPage = result.nextPage;
+                var begin;
+                var end;
+                if (totalPage < 10) {
+                    begin = 1;
+                    end = totalPage;
+                } else {
+                    begin = pageNum - 5;
+                    end = pageNum + 4;
+                    if (begin < 1) {
+                        begin = 1;
+                        end = 10;
+                    }
+                    if (end > totalPage) {
+                        end = totalPage;
+                        begin = totalPage - 9;
+                    }
+                }
+                var pageLineHtml = '<li><a href="javascript:;" onclick="getPageData(1,12)">首页</a></li>\n' +
+                    '                <li class="threeword"><a href="javascript:;" onclick="getPageData(' + prePage + ',12)">上一页</a></li>';
+                for (var i = begin; i <= end; i++) {
+                    if (pageNum === i) {
+                        pageLineHtml += '<li class="curPage"><a href="javascript:;" onclick="getPageData(' + i + ',12)">' + i + '</a></li>';
+                    } else {
+                        pageLineHtml += '<li><a href="javascript:;" onclick="getPageData(' + i + ',12)">' + i + '</a></li>';
+                    }
+                }
+                pageLineHtml += '<li class="threeword"><a href="javascript:;" onclick="getPageData(' + nextPage + ',12)">下一页</a></li>\n' +
+                    '                <li class="threeword"><a href="javascript:;" onclick="getPageData(' + totalPage + ',12)">末页</a></li>';
+
+                $("#pageLine").html(pageLineHtml);
+            }
+        }, "json")
+    }
+</script>
+</body>
+</html>

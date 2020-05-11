@@ -1,0 +1,30 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: travel
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:3306/db_travel?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+  jpa:
+   database: MySQL
+   show-sql: true
+   open-in-view: true  
+  data:
+    redis:
+      repositories:
+        enabled: false
+  redis:
+    host: 127.0.0.1
+    jedis:
+      pool:
+        max-active: 20
+        max-idle: 1000
+    port: 6379
+mail:
+  hostName: smtp.163.com
+  charset: GB2312
+  authen_name: hushaowei2526@163.com
+  authen_pwd: WQCGFBWQTFXQCVGD
